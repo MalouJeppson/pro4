@@ -1,0 +1,211 @@
+  <!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Fly to a location based on scroll position</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+    
+   
+
+
+<style>
+    
+    .young {
+        
+    position: relative;
+    width: 40%;   
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+    margin: auto;
+    
+        
+    }
+    
+    .school {
+    position: relative;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+    margin: auto;
+    
+        
+    }
+    
+    .wedding {
+        
+    position: relative;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+    margin: auto;
+    
+    }
+    
+    .logo {
+        
+        position: relative;
+    width: 50%;
+    top: 30px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+    margin: auto;
+    }
+    
+    p {font-family: avenir}
+    
+    h1 {color: darkgreen}
+    
+    
+#map {
+    position: fixed;
+    width:50%;
+}
+#features {
+    width: 50%;
+    margin-left: 50%;
+    font-family: avenir;
+    overflow-y: scroll;
+    background-color: lightgray;
+}
+section {
+    padding:  25px 50px;
+    line-height: 25px;
+    border-bottom: 1px solid #ddd;
+    opacity: 0.25;
+    font-size: 13px;
+}
+section.active {
+    opacity: 1;
+}
+section:last-child {
+    border-bottom: none;
+    margin-bottom: 200px;
+}
+</style>
+    
+
+<div id='map'></div>
+<div id='features'>
+    <section id='upper east' class='active'>
+        
+         <img class="logo" src="images/logo.png">
+        
+        <h1><i>BEGYNDELSEN:</i></h1>
+        <h3>Upper East Side, New York</h3>
+        <p>Blair og Chuck er vokset op sammen på Upper East Side, som er et meget velhavende område i New York. De har kendt hinanden siden de var små børn, men de har altid haft et ”love and hate” forhold” </p>
+        
+       <img class="young" src="images/young.png">
+    
+             </section>
+    <section id='school'>
+        <h1><i>STARTEN PÅ KÆRLIGHEDEN:</i></h1>
+        <h3>Constance Billard School, New York</h3>
+        <p>Da de begynder i High School sammen, begynder deres kærlighedsforhold for alvor. Dog ikke uden drama. De er kæreste og ikke kæreste, igennem hele serien. De er begge meget dramatiske, og vil begge have deres vilje. De har begge forskellige kærester igennem serien, men alligevel kan de ikke undvære hinanden, og finder altid sammen igen </p>
+        
+        <img class="school" src="images/school.png">
+    </section>
+    <section id='central'>
+        <h1><i>DEN LYKKELIGE AFSLUTNING:</i></h1>
+        <h3>Central Park, New York</h3>
+        <p>Efter nogle hårde teenage år, indser de begge, at de er skabt for hinanden. Chuck frier til Blair, og de bliver gift midt inden i central park, et sted hvor de begge har brugt rigtig meget tid sammen</p>
+        
+        <img class="wedding" src="images/weddingg.png">
+    </section>
+    
+    
+    
+    
+   
+</div>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoibWFsb3VqZXBwc29uIiwiYSI6ImNqZmt2aXZkczBjb2kycXR2aDVxank1OWEifQ.tCVCS8uIsMrwqsYBztQSDA';
+
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/maloujeppson/cjfm8xxqv0pgg2rllgjr8bo39',
+    //mapbox://styles/maloujeppson/cjfm8xxqv0pgg2rllgjr8bo39
+    center: [-73.958700, 40.773500],
+    zoom: 15.5,
+    bearing: 27,
+    pitch: 45
+});
+    
+    
+  
+
+
+
+var chapters = {
+    'upper east': {
+        bearing: 27,
+        center: [-73.958700, 40.773500],
+        zoom: 15.5,
+        pitch: 20
+    },
+    'school': {
+        duration: 6000,
+        center: [-73.951944, 40.792500],
+        bearing: 150,
+        zoom: 15,
+        pitch: 0
+    },
+    'central': {
+        bearing: 90,
+        center: [-73.952229, 40.780942],
+        zoom: 13,
+        speed: 0.6,
+        pitch: 40
+    },
+  
+};
+
+// On every scroll event, check which element is on screen
+window.onscroll = function() {
+    var chapterNames = Object.keys(chapters);
+    for (var i = 0; i < chapterNames.length; i++) {
+        var chapterName = chapterNames[i];
+        if (isElementOnScreen(chapterName)) {
+            setActiveChapter(chapterName);
+            break;
+        }
+    }
+};
+
+var activeChapterName = 'baker';
+function setActiveChapter(chapterName) {
+    if (chapterName === activeChapterName) return;
+
+    map.flyTo(chapters[chapterName]);
+
+    document.getElementById(chapterName).setAttribute('class', 'active');
+    document.getElementById(activeChapterName).setAttribute('class', '');
+
+    activeChapterName = chapterName;
+}
+
+function isElementOnScreen(id) {
+    var element = document.getElementById(id);
+    var bounds = element.getBoundingClientRect();
+    return bounds.top < window.innerHeight && bounds.bottom > 0;
+}
+
+</script>
+
+</body>
+</html>
